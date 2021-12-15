@@ -17,21 +17,18 @@ exports.getBlogs = async (request, response) => {
   response.json(res);
 };
 
-exports.deleteBlog = async (request, response) => {
-  const id = request.params.id;
-  const res = await Blog.deleteOne({ _id: id });
-  response.json(res);
-};
-
-exports.deleteBlogs = async (request, response) => {
-  await Blog.deleteMany();
-  response.send("deleted");
-};
-
 exports.updateBlog = async (request, response) => {
-  await Blog.findOneAndUpdate(
-    { _id: request.body._id },
-    { likes: request.body.likes }
-  );
-  response.send("updated");
+  const { likes, _id } = request.body;
+  await Blog.findOneAndUpdate({ _id }, { likes });
+  response.send("updated successfully");
+};
+
+exports.deleteBlog = async (request, response) => {
+  try {
+    const id = request.params.id;
+    await Blog.deleteOne({ _id: id });
+    response.send("deleted successfully");
+  } catch (error) {
+    return response.status(422).send("wrong id, this blog does'nt exist");
+  }
 };

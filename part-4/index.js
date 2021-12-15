@@ -3,13 +3,17 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const mongoose = require("mongoose");
-const apiRouter = require("./router/apiRouter");
+const blogsRouter = require("./router/blogsRouter");
+const loginRouter = require("./router/loginRouter");
+const usersRouter = require("./router/usersRouter");
 require("dotenv").config();
-
+const { userExtractor } = require("./middleware/errorHandler");
 app.use(cors());
 app.use(express.json());
 
-app.use("/api", apiRouter);
+app.use("/api/blogs", userExtractor, blogsRouter);
+app.use("/api/login", loginRouter);
+app.use("/api/users", usersRouter);
 
 mongoose
   .connect(process.env.DB_URI, {
