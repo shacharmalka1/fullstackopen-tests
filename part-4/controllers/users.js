@@ -1,6 +1,5 @@
 const bcrypt = require("bcryptjs");
 const User = require("../model/UsersSchema");
-const Blog = require("../model/Blogscheme");
 
 exports.createUser = async (req, res) => {
   try {
@@ -10,6 +9,7 @@ exports.createUser = async (req, res) => {
       username: username,
       name: name,
       password: passwordHash,
+      blogs: [],
     });
     res.json(user);
   } catch (error) {
@@ -17,7 +17,7 @@ exports.createUser = async (req, res) => {
   }
 };
 
-exports.getUser = async (request, response) => {
-  const blogs = await Blog.find({});
-  response.json(blogs);
+exports.getUsers = async (req, res) => {
+  const users = await User.find();
+  res.json(users);
 };

@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const userSchema = new mongoose.Schema({
+const UserSchema = new mongoose.Schema({
   username: {
     type: String,
     required: true,
@@ -9,15 +9,20 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  name: String,
+  name: {
+    type: String,
+    default: "anonymous",
+  },
   blogs: [
     {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "blog",
+      title: String,
+      author: String,
+      url: String,
+      likes: Number,
     },
   ],
 });
-userSchema.set("toJSON", {
+UserSchema.set("toJSON", {
   transform: (_, returnedObject) => {
     returnedObject.id = returnedObject._id.toString();
     delete returnedObject._id;
@@ -26,4 +31,5 @@ userSchema.set("toJSON", {
   },
 });
 
-module.exports = mongoose.model("user", userSchema);
+const User = mongoose.model("User", UserSchema);
+module.exports = User;

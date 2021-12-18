@@ -6,9 +6,6 @@ const app = require("../index");
 const api = supertest(app);
 
 const getValidToken = async () => {
-  await api
-    .post("/api/users")
-    .send({ username: "admin", password: "test", name: "shacahr" });
   const res = await api
     .post("/api/login")
     .send({ username: "admin", password: "test" });
@@ -16,6 +13,9 @@ const getValidToken = async () => {
 };
 
 test("should verify the length in DB as we expected", async () => {
+  await api
+    .post("/api/users")
+    .send({ username: "admin", password: "test", name: "shacahr" });
   const token = await getValidToken();
   const result = await api
     .get("/api/blogs")

@@ -1,15 +1,25 @@
 const Blog = require("../model/Blogscheme");
+const User = require("../model/UsersSchema");
 
 exports.postBlog = async (request, response) => {
   let likes = 0;
+  const user = request.user;
   if (request.body.likes) likes = request.body.likes;
-  const blog = { likes, ...request.body };
+  let blog = { likes, ...request.body };
+  blog = { user, ...blog };
   if (!request.body.title || !request.body.url) {
     response.status(400).send("should include title and url");
     return;
   }
-  await Blog.insertMany(blog);
-  response.send(blog);
+  const newBlog = await Blog.create(blog);
+  await User.findOneAndUpdate(
+    { _id: user.id },
+    { $push: { blogs: { _id: newBlog.id, ...blog } } }
+  );
+  response.json({
+    blog,
+    message: `blog posted - "${blog.title}" by ${user.username}!`,
+  });
 };
 
 exports.getBlogs = async (request, response) => {
